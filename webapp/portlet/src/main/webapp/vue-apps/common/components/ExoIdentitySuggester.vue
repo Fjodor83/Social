@@ -89,6 +89,10 @@
 <script>
 export default {
   props: {
+    allGroupsForAdmin: {
+      type: Boolean,
+      default: false,
+    },
     value: {
       type: Object,
       default: null,
@@ -259,11 +263,58 @@ export default {
         this.searchStarted = true;
       }
     },
-    searchTerm() {
-      this.startTypingKeywordTimeout = Date.now() + this.startSearchAfterInMilliseconds;
-      if (!this.typing) {
-        this.typing = true;
-        this.waitForEndTyping();
+    searchTerm(value) {
+      if (value && value.length) {
+        window.setTimeout(() => {
+          this.focus();
+          if (!this.previousSearchTerm || this.previousSearchTerm !== this.searchTerm) {
+            this.loadingSuggestions = 0;
+            this.items = [];
+            if (!this.includeGroups) {
+              this.$suggesterService.searchSpacesOrUsers(value,
+                this.items,
+                this.typeOfRelations,
+                this.searchOptions,
+                this.includeUsers,
+                this.includeSpaces,
+                this.onlyRedactor,
+                this.noRedactorSpace,
+                this.onlyManager,
+                () => this.loadingSuggestions++,
+                () => {
+                  this.loadingSuggestions--;
+                });
+            } else {
+              this.$suggesterService.search({
+                term: value,
+                items: this.items,
+                typeOfRelations: this.typeOfRelations,
+                searchOptions: this.searchOptions,
+                includeUsers: this.includeUsers,
+                includeSpaces: this.includeSpaces,
+                includeGroups: this.includeGroups,
+                onlyRedactor: this.onlyRedactor,
+                groupMember: this.groupMember,
+                groupType: this.groupType,
+                allGroupsForAdmin: this.allGroupsForAdmin,
+                noRedactorSpace: this.noRedactorSpace,
+                onlyManager: this.onlyManager,
+                loadingCallback: () => this.loadingSuggestions++,
+                successCallback: () => {
+                  this.loadingSuggestions--;
+                },
+                errorCallback: () => {
+                  throw new Error('Response code indicates a server error');
+                }
+              });
+            }
+
+          }
+          this.previousSearchTerm = this.searchTerm;
+        }, 400);
+      } else {
+        this.items = [];
+        this.searchStarted = false;
       }
     },
     value() {
