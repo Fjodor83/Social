@@ -58,9 +58,9 @@ import org.exoplatform.social.service.rest.notification.IntranetNotificationsRes
   SpaceMembershipRestResourcesTest.class,
   SpacesAdministrationRestResourcesTest.class,
   UsersRelationshipsRestResourcesTest.class,
-  UserRestResourcesTest.class,
   GroupSpaceBindingRestServiceTest.class,
   FavoriteRestTest.class,
+  UserRestResourcesTest.class
   })
 @ConfigTestCase(AbstractServiceTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {
