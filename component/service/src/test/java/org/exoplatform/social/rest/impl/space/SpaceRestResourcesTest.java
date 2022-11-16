@@ -31,7 +31,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.metadata.thumbnail.ImageThumbnailService;
 import org.exoplatform.social.mock.MockUploadService;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
@@ -44,31 +43,21 @@ import org.exoplatform.upload.UploadService;
 import org.json.JSONObject;
 
 public class SpaceRestResourcesTest extends AbstractResourceTest {
-  private IdentityManager       identityManager;
+  private IdentityManager identityManager;
+  private OrganizationService organizationService;
+  private UserACL userACL;
+  private ActivityManager activityManager;
+  private SpaceService spaceService;
 
-  private OrganizationService   organizationService;
+  private SpaceRestResourcesV1 spaceRestResources;
 
-  private UserACL               userACL;
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
+  private Identity externalUserIdentity;
 
-  private ActivityManager       activityManager;
-
-  private SpaceService          spaceService;
-
-  private SpaceRestResourcesV1  spaceRestResources;
-
-  private Identity              rootIdentity;
-
-  private Identity              johnIdentity;
-
-  private Identity              maryIdentity;
-
-  private Identity              demoIdentity;
-
-  private Identity              externalUserIdentity;
-
-  private ImageThumbnailService imageThumbnailService;
-
-  private MockUploadService     uploadService;
+  private MockUploadService    uploadService;
 
   public void setUp() throws Exception {
     super.setUp();
@@ -80,19 +69,16 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
     organizationService = getContainer().getComponentInstanceOfType(OrganizationService.class);
     uploadService = (MockUploadService) getContainer().getComponentInstanceOfType(UploadService.class);
-    imageThumbnailService = getContainer().getComponentInstanceOfType(ImageThumbnailService.class);
-    
+
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root");
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john");
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary");
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo");
 
-    spaceRestResources =
-                       new SpaceRestResourcesV1(new ActivityRestResourcesV1(activityManager, identityManager, spaceService, null),
-                                                spaceService,
-                                                identityManager,
-                                                uploadService,
-                                                imageThumbnailService);
+    spaceRestResources = new SpaceRestResourcesV1(new ActivityRestResourcesV1(activityManager, identityManager, spaceService, null),
+                                                  spaceService,
+                                                  identityManager,
+                                                  uploadService);
     registry(spaceRestResources);
 
     SpaceTemplatesRestResourcesV1 spaceTemplatesRestResourcesV1 = new SpaceTemplatesRestResourcesV1(getContainer().getComponentInstanceOfType(SpaceTemplateService.class), getContainer().getComponentInstanceOfType(ConfigurationManager.class));

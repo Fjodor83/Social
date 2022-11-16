@@ -22,7 +22,6 @@ import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.exoplatform.commons.file.model.FileItem;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
@@ -211,24 +210,13 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  @Override
-  public FileItem getAvatarFile(Identity identity) {
-    if (identity == null) {
-      return null;
-    }
-    return identityStorage.getAvatarFile(identity);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   public InputStream getBannerInputStream(Identity identity) throws IOException {
     if (identity == null) {
       return null;
     }
     return identityStorage.getBannerInputStreamById(identity);
   }
-
+  
   /**
    * {@inheritDoc}
    */
